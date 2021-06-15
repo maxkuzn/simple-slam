@@ -27,7 +27,6 @@ class VisualOdometry {
   }
 
  private:
-  bool is_inited_ = false;
   const std::string config_path_;
 
   std::shared_ptr<Tracking> tracking_;
