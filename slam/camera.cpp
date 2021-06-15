@@ -37,7 +37,7 @@ Eigen::Vector3d Camera::pixel2world(const Eigen::Vector3d& p_p,
   return camera2world(pixel2camera(p_p, depth), T_c_w);
 }
 
-Eigen::Vector3d Camera::world2pixel(const Eigen::Vector3d& p_w,
+Eigen::Vector2d Camera::world2pixel(const Eigen::Vector3d& p_w,
                                     const Sophus::SE3d& T_c_w) {
   return camera2pixel(world2camera(p_w, T_c_w));
 }
