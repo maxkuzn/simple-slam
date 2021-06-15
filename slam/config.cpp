@@ -8,7 +8,7 @@ namespace util {
 
 void Config::SetParameterFile(const std::string &filename) {
   if (!config_) {
-    config_ = std::make_shared<Config>();
+    config_ = std::shared_ptr<Config>(new Config());
   }
   config_->file_ = cv::FileStorage(filename.c_str(), cv::FileStorage::READ);
   if (!config_->file_.isOpened()) {
