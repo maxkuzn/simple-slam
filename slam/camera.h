@@ -38,14 +38,14 @@ class Camera {
   Eigen::Vector3d camera2world(const Eigen::Vector3d& p_c,
                                const Sophus::SE3d& T_c_w);
 
-  Eigen::Vector3d camera2pixel(const Eigen::Vector3d& p_c);
+  Eigen::Vector2d camera2pixel(const Eigen::Vector3d& p_c);
 
   Eigen::Vector3d pixel2camera(const Eigen::Vector3d& p_p, double depth);
 
   Eigen::Vector3d pixel2world(const Eigen::Vector3d& p_p,
                               const Sophus::SE3d& T_c_w, double depth);
 
-  Eigen::Vector3d world2pixel(const Eigen::Vector3d& p_2,
+  Eigen::Vector3d world2pixel(const Eigen::Vector3d& p_w,
                               const Sophus::SE3d& T_c_w);
 
  private:
