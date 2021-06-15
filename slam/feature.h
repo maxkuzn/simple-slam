@@ -43,6 +43,10 @@ class Feature {
     is_on_left_image_ = false;
   }
 
+  void ResetMapPoint() {
+    map_point_.reset();
+  }
+
  private:
   std::weak_ptr<Frame> frame_;
   cv::KeyPoint pos_;
