@@ -27,18 +27,19 @@ class Viewer {
 
   void Close();
 
-  void AddCurrentFrame(const std::shared_ptr<Frame> curr_frame);
+  void AddCurrentFrame(const std::shared_ptr<Frame>& curr_frame);
 
   void UpdateMap();
 
  private:
   void ThreadLoop();
 
-  void DrawFrame(const std::shared_ptr<Frame>& frame, const float* color);
+  void DrawFrame(const std::shared_ptr<Frame>& frame,
+                 const std::array<float, 3>& color);
 
   void DrawMapPoints();
 
-  void FollorCurrentFrame(pangolin::OpenGlRenderState& vis_camera);
+  void FollowCurrentFrame(pangolin::OpenGlRenderState& vis_camera);
 
   cv::Mat PlotFrameImage();
 
@@ -49,11 +50,11 @@ class Viewer {
 
   std::mutex mutex_;
   std::thread viewer_thread_;
-  bool stop_flag_ = false;
+  std::atomic<bool> stop_flag_ = false;
 
   std::unordered_map<uint32_t, std::shared_ptr<Frame>> active_keyframes_;
   std::unordered_map<uint32_t, std::shared_ptr<MapPoint>> active_landmarks_;
-  bool map_update_ = false;
+  bool map_updated_ = false;
 };
 
 
