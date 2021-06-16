@@ -49,6 +49,14 @@ class Frame {
     right_img_ = std::move(right_img);
   }
 
+  const cv::Mat& LeftImage() const {
+    return left_img_;
+  }
+
+  const auto& LeftFeatures() const {
+    return left_features_;
+  }
+
  private:
   std::mutex mutex_;
 

@@ -88,9 +88,10 @@ cv::Mat Viewer::PlotFrameImage() {
     auto map_point = features[i]->LockMapPoint();
     if (map_point) {
       auto f = features[i];
-      cv::circle(img, f->Position().pt, 2, cv::Scalar(0, 255, 0), 2);
+      cv::circle(img, f->GetPosition().pt, 2, cv::Scalar(0, 255, 0), 2);
     }
   }
+  return img;
 }
 
 

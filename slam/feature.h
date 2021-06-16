@@ -43,8 +43,16 @@ class Feature {
     is_on_left_image_ = false;
   }
 
+  auto LockMapPoint() {
+    return map_point_.lock();
+  }
+
   void ResetMapPoint() {
     map_point_.reset();
+  }
+
+  const cv::KeyPoint& GetPosition() {
+    return pos_;
   }
 
  private:
