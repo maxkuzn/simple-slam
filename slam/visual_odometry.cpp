@@ -52,7 +52,9 @@ bool VisualOdometry::Step() {
     return false;
   }
 
-  return tracking_->AddFrame(new_frame);
+  tracking_->AddFrame(new_frame);
+  return true;
+  // return tracking_->AddFrame(new_frame);
 }
 
 

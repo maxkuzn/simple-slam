@@ -27,7 +27,7 @@ class Tracking {
  public:
   Tracking();
 
-  bool AddFrame(const std::shared_ptr<Frame>& frame);
+  void AddFrame(const std::shared_ptr<Frame>& frame);
 
   void SetMap(const std::shared_ptr<Map>& map);
 
@@ -51,8 +51,8 @@ class Tracking {
 
 
  private:
-  bool Track();
-  bool Reset();
+  void Track();
+  void Reset();
 
   // Returns num of tracked points
   uint32_t TrackLastFrame();
@@ -60,9 +60,9 @@ class Tracking {
   // Returns num of inliers 
   uint32_t EstimateCurrentPose();
 
-  bool InsertKeyFrame();
+  void InsertKeyFrame();
 
-  bool StereoInit();
+  void StereoInit();
 
   uint32_t DetectFeatures();
 
@@ -75,6 +75,14 @@ class Tracking {
   void SetObservationsForKeyFrame();
 
  private:
+  const uint32_t num_features_ = 200;
+  const uint32_t num_features_init_ = 100;
+  static constexpr uint32_t kNumFeaturesTracking = 50;
+  static constexpr uint32_t kNumFeaturesTrackingBad = 20;
+  static constexpr uint32_t kNumFeaturesNeededForKeyFrame = 80;
+
+  uint32_t tracking_inliers_ = 0;
+
   TrackingStatus status_ = TrackingStatus::kIniting;
 
   std::shared_ptr<Frame> current_frame_ = nullptr;
@@ -90,14 +98,6 @@ class Tracking {
   Sophus::SE3d relative_motion_;
 
   cv::Ptr<cv::GFTTDetector> detector_;
-
-  uint32_t tracking_inliers_ = 0;
-
-  static constexpr uint32_t kNumFeatures = 200;
-  static constexpr uint32_t kNumFeaturesInit = 100;
-  static constexpr uint32_t kNumFeaturesTracking = 50;
-  static constexpr uint32_t kNumFeaturesTrackingBad = 20;
-  static constexpr uint32_t kNumFeaturesNeededForKeyFrame = 80;
 };
 
 
