@@ -2,6 +2,8 @@
 
 namespace slam {
 
+class MapPoint {
+};
 
 
 }  // namespace slam
