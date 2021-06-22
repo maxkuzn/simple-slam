@@ -55,13 +55,13 @@ class LogStream {
 
 
 #define LogS(log_level) \
-  LogStream(log_level, __FILE__, __FUNCTION__, __LINE__)
+  ::slam::util::LogStream(log_level, __FILE_NAME__, __func__, __LINE__)
 
-#define  InfoLogS LogS(slam::ELogLevel::kInfo)
-#define DebugLogS LogS(slam::ELogLevel::kDebug)
-#define  WarnLogS LogS(slam::ELogLevel::kWarn)
-#define ErrorLogS LogS(slam::ELogLevel::kError)
-#define FatalLogS LogS(slam::ELogLevel::kFatal)
+#define  InfoLogS() LogS(slam::ELogLevel::kInfo)
+#define DebugLogS() LogS(slam::ELogLevel::kDebug)
+#define  WarnLogS() LogS(slam::ELogLevel::kWarn)
+#define ErrorLogS() LogS(slam::ELogLevel::kError)
+#define FatalLogS() LogS(slam::ELogLevel::kFatal)
 
 
 }  // namespace util

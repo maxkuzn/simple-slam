@@ -28,11 +28,10 @@ constexpr std::array<const char*, 6> LogLevel2Str = {
 
 static void LogPrefix(ELogLevel log_level,
           const std::string& filename, const std::string& func, int line) {
-  printf("[%s| file=%s | func=%s | line=%d ] ",
+  printf("[%s| file=%s:%d | func=%s ] ",
          LogLevel2Str[static_cast<uint8_t>(log_level)],
-         filename.c_str(),
-         func.c_str(),
-         line);
+         filename.c_str(), line,
+         func.c_str());
 }
 
 
@@ -46,9 +45,9 @@ void LogF(ELogLevel log_level,
   std::va_list arg;
   va_start(arg, format);
   LogPrefix(log_level, filename, func, line);
-  if (vprintf(format, arg) != 0) {
-    throw std::runtime_error("vprintf error");
-  }
+  vprintf(format, arg);
+  // throw std::runtime_error("vprintf error");
+  // }
   va_end(arg);
 }
 
