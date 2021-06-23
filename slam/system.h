@@ -14,7 +14,7 @@ class System {
  public:
   System(const SLAMSettings& settings) {
     SetLogLevel(settings.GetLogLevel());
-    InfoLogS() << "Creating SLAM System";
+    LogInfo() << "Creating SLAM System";
     tracker_ = std::make_shared<Tracker>();
   }
 
