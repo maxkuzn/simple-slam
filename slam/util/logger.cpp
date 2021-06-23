@@ -16,39 +16,31 @@ void SetLogLevel(ELogLevel log_level) {
 namespace util {
 
 
-constexpr std::array<const char*, 6> LogLevel2Str = {
-  "ZERO ",
-  "INFO ",
-  "DEBUG",
-  "WARN ",
-  "ERROR",
-  "FATAL",
-};
+static constexpr const char* LogLevel2Str(ELogLevel log_level) {
+  constexpr std::array<const char*, 6> map = {
+    "ZERO ",
+    "INFO ",
+    "DEBUG",
+    "WARN ",
+    "ERROR",
+    "FATAL",
+  };
 
-
-static void LogPrefix(ELogLevel log_level,
-          const std::string& filename, const std::string& func, int line) {
-  printf("[%s| file=%s:%d | func=%s ] ",
-         LogLevel2Str[static_cast<uint8_t>(log_level)],
-         filename.c_str(), line,
-         func.c_str());
+  return map[static_cast<uint8_t>(log_level)];
 }
 
 
-void LogF(ELogLevel log_level,
-          const std::string& filename, const std::string& func, int line,
-          const char* format, ...) {
-  if (static_cast<uint8_t>(log_level) < static_cast<uint8_t>(
-        GlobalLogLevel.load(std::memory_order_release))) {
-    return;
-  }
-  std::va_list arg;
-  va_start(arg, format);
-  LogPrefix(log_level, filename, func, line);
-  vprintf(format, arg);
-  // throw std::runtime_error("vprintf error");
-  // }
-  va_end(arg);
+LogStream::LogStream(ELogLevel log_level,
+                     const std::string& filename,
+                     const std::string& func,
+                     int line) {
+  message_ << '[' << LogLevel2Str(log_level) << "| "
+           << filename << ':' << line << " | " << func << " ] ";
+}
+
+LogStream::~LogStream() {
+  std::string message_str = message_.str();
+  printf("%s\n", message_str.c_str());
 }
 
 }  // namespace util

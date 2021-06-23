@@ -17,26 +17,12 @@ void SetLogLevel(ELogLevel log_level);
 
 namespace util {
 
-__attribute__ ((format (printf, 5, 6)))
-void LogF(ELogLevel log_level,
-          const std::string& filename, const std::string& func, int line,
-          const char* format, ...);
-
 class LogStream {
  public:
   LogStream(ELogLevel log_level,
-            const std::string& filename, const std::string& func, int line)
-    : log_level_(log_level)
-    , filename_(filename)
-    , func_(func)
-    , line_(line)
-  {
-  }
+            const std::string& filename, const std::string& func, int line);
 
-  ~LogStream() {
-    auto message_str = message_.str();
-    LogF(log_level_, filename_, func_, line_, "%s", message_str.c_str());
-  }
+  ~LogStream();
 
   template <typename T>
   LogStream& operator<<(const T& item) {
@@ -45,23 +31,21 @@ class LogStream {
   }
 
  private:
-  const ELogLevel log_level_;
-  const std::string filename_;
-  const std::string func_;
-  const int line_;
-
   std::stringstream message_;
 };
 
+#ifndef __FILE_NAME__
+#define __FILE_NAME__ __FILE__
+#endif
 
-#define LogS(log_level) \
+#define Log(log_level) \
   ::slam::util::LogStream(log_level, __FILE_NAME__, __func__, __LINE__)
 
-#define  InfoLogS() LogS(slam::ELogLevel::kInfo)
-#define DebugLogS() LogS(slam::ELogLevel::kDebug)
-#define  WarnLogS() LogS(slam::ELogLevel::kWarn)
-#define ErrorLogS() LogS(slam::ELogLevel::kError)
-#define FatalLogS() LogS(slam::ELogLevel::kFatal)
+#define LogInfo()  Log(slam::ELogLevel::kInfo)
+#define LogDebug() Log(slam::ELogLevel::kDebug)
+#define LogWarn()  Log(slam::ELogLevel::kWarn)
+#define LogError() Log(slam::ELogLevel::kError)
+#define LogFatal() Log(slam::ELogLevel::kFatal)
 
 
 }  // namespace util
