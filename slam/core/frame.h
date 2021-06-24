@@ -92,6 +92,10 @@ class Frame : public std::enable_shared_from_this<Frame> {
     return key_points_.size();
   }
 
+  const cv::KeyPoint& GetKeyPoint(size_t index) const {
+    return key_points_[index];
+  }
+
   cv::Mat GetKeyPointWorldCoordinates(size_t index) const {
     const cv::KeyPoint kp = key_points_[index];
     const float v = kp.pt.y;
@@ -110,8 +114,12 @@ class Frame : public std::enable_shared_from_this<Frame> {
     map_points_[index] = map_point;
   }
 
-  const std::shared_ptr<MapPoint> GetMapPoint(size_t index) const {
+  const std::shared_ptr<MapPoint>& GetMapPoint(size_t index) const {
     return map_points_[index];
+  }
+
+  const std::shared_ptr<Camera>& GetCamera() const {
+    return camera_;
   }
 
  private:
