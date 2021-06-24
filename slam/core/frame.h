@@ -1,5 +1,6 @@
 #pragma once
 
+#include "slam/core/map_point.h"
 #include <memory>
 #include <opencv2/core/core.hpp>
 #include <opencv2/core/types.hpp>
@@ -66,6 +67,14 @@ class Frame : public std::enable_shared_from_this<Frame> {
     return pose_;
   }
 
+  void SetMapPoint(size_t index, const std::shared_ptr<MapPoint>& map_point) {
+    map_points_[index] = map_point;
+  }
+
+  const std::shared_ptr<MapPoint> GetMapPoint(size_t index) const {
+    return map_points_[index];
+  }
+
  private:
   static size_t next_frame_id_;
   const size_t id_;
@@ -73,6 +82,7 @@ class Frame : public std::enable_shared_from_this<Frame> {
 
   cv::Mat img_;
   std::vector<cv::KeyPoint> keypoints_;
+  std::vector<std::shared_ptr<MapPoint>> map_points_;
   cv::Mat descriptors_;
 
   cv::Mat right_img_;
