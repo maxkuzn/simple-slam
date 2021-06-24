@@ -1,6 +1,7 @@
 #pragma once
 
 #include "slam/core/frame.h"
+#include "slam/core/map_point.h"
 #include "slam/feature/orb_matcher.h"
 #include "slam/util/logger.h"
 #include <memory>
@@ -36,6 +37,12 @@ class Tracker {
  private:
   void Init(const std::shared_ptr<Frame>& frame) {
     frame->SetPose(cv::Mat::eye(4, 4, CV_32F));
+    size_t size = frame->GetKeyPointsSize();
+    for (size_t i = 0; i != size; ++i) {
+      cv::Mat w_c = frame->GetKeyPointWorldCoordinates(i);
+      auto map_point = std::make_shared<MapPoint>(w_c);
+      frame->SetMapPoint(i, map_point);
+    }
     prev_frame_ = frame;
     status_ = EStatus::kOk;
   }

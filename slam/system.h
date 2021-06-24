@@ -27,16 +27,6 @@ class System {
     tracker_->Track(frame);
   }
 
-  void TrackStereo(const cv::Mat& left_img, const cv::Mat& right_img, double timestamp) {
-    std::shared_ptr<Frame> frame = Frame::FromStereo(left_img, right_img, timestamp);
-    Track(frame);
-  }
-
-  void TrackRGBD(const cv::Mat& img, const cv::Mat& depth, double timestamp) {
-    std::shared_ptr<Frame> frame = Frame::FromRGBD(img, depth, timestamp);
-    Track(frame);
-  }
-
  private:
   std::shared_ptr<Tracker> tracker_;
   std::shared_ptr<ORBExtractor> orb_extractor_;

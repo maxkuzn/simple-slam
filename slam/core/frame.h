@@ -23,18 +23,20 @@ class Frame : public std::enable_shared_from_this<Frame> {
 
   Frame(stereo_t,
         const cv::Mat& left_img, const cv::Mat& right_img, double timestamp,
-        const std::shared_ptr<const Camera>& camera)
+        const std::shared_ptr<Camera>& camera)
     : id_(next_frame_id_++)
     , img_(left_img)
     , right_img_(right_img)
     , timestamp_(timestamp)
     , camera_(camera)
   {
+    LogFatal() << "Not implemented depth computation";
+    throw std::runtime_error("Not implemented");
   }
 
   Frame(rgbd_t,
         const cv::Mat& img, const cv::Mat& depth, double timestamp,
-        const std::shared_ptr<const Camera>& camera)
+        const std::shared_ptr<Camera>& camera)
     : id_(next_frame_id_++)
     , img_(img)
     , depth_(depth)
@@ -47,19 +49,21 @@ class Frame : public std::enable_shared_from_this<Frame> {
   static std::shared_ptr<Frame> FromStereo(const cv::Mat& left_img,
                                            const cv::Mat& right_img,
                                            double timestamp,
-                                           const std::shared_ptr<const Camera>& camera) {
-    return std::make_shared<Frame>(stereo_t{},
-                                   left_img, right_img, timestamp,
-                                   camera);
+                                           const std::shared_ptr<Camera>& camera) {
+    return std::shared_ptr<Frame>(
+                new Frame(stereo_t{},
+                          left_img, right_img, timestamp,
+                          camera));
   }
 
   static std::shared_ptr<Frame> FromRGBD(const cv::Mat& img,
                                          const cv::Mat& depth,
                                          double timestamp,
-                                         const std::shared_ptr<const Camera>& camera) {
-    return std::make_shared<Frame>(rgbd_t{},
-                                   img, depth, timestamp,
-                                   camera);
+                                         const std::shared_ptr<Camera>& camera) {
+    return std::shared_ptr<Frame>(
+                new Frame(rgbd_t{},
+                          img, depth, timestamp,
+                          camera));
   }
 
   void ExtractFeatures(ORBExtractor& orb_extractor);
@@ -90,9 +94,9 @@ class Frame : public std::enable_shared_from_this<Frame> {
 
   cv::Mat GetKeyPointWorldCoordinates(size_t index) const {
     const cv::KeyPoint kp = key_points_[index];
-    const float& v = kp.pt.y;
-    const float& u = kp.pt.x;
-    const float& d = depth_.at<float>(v, u);
+    const float v = kp.pt.y;
+    const float u = kp.pt.x;
+    const float d = depth_.at<float>(v, u);
     if (d <= 0) {
       return cv::Mat();
     }
@@ -131,7 +135,7 @@ class Frame : public std::enable_shared_from_this<Frame> {
   cv::Mat depth_;
   const double timestamp_;
 
-  std::shared_ptr<const Camera> camera_;
+  std::shared_ptr<Camera> camera_;
 };
 
 }  // namespace slam
