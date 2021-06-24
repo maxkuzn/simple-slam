@@ -20,7 +20,7 @@ namespace slam {
 class TUMFrameStreamer : public IFrameStreamer {
  public:
   TUMFrameStreamer(const std::string& path_to_sequence)
-    : IFrameStreamer(1, 1, 1, 1)
+    : IFrameStreamer(318.643040, 255.313989, 517.306408, 516.469215)
     , path_to_sequence_(path_to_sequence)
     , associations_file_(path_to_sequence + "/associations.txt")
     , curr_idx_(0)
