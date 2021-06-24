@@ -26,11 +26,14 @@ class LogStream {
 
   template <typename T>
   LogStream& operator<<(const T& item) {
-    message_ << item;
+    if (write_) {
+      message_ << item;
+    }
     return *this;
   }
 
  private:
+  bool write_;
   std::stringstream message_;
 };
 

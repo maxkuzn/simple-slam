@@ -33,14 +33,20 @@ static constexpr const char* LogLevel2Str(ELogLevel log_level) {
 LogStream::LogStream(ELogLevel log_level,
                      const std::string& filename,
                      const std::string& func,
-                     int line) {
-  message_ << '[' << LogLevel2Str(log_level) << "| "
-           << filename << ':' << line << " | " << func << " ] ";
+                     int line)
+    : write_(log_level >= GlobalLogLevel.load(std::memory_order_release))
+{
+  if (write_) {
+    message_ << '[' << LogLevel2Str(log_level) << "| "
+             << filename << ':' << line << " | " << func << " ] ";
+  }
 }
 
 LogStream::~LogStream() {
-  std::string message_str = message_.str();
-  printf("%s\n", message_str.c_str());
+  if (write_) {
+    std::string message_str = message_.str();
+    printf("%s\n", message_str.c_str());
+  }
 }
 
 }  // namespace util
