@@ -14,11 +14,26 @@ class ORBMatcher {
     matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::BRUTEFORCE_HAMMING);
   }
 
-  std::vector<cv::DMatch> Match(const std::shared_ptr<Frame>& train_frame,
-                                const std::shared_ptr<Frame>& query_frame) {
+  void Match(const std::shared_ptr<Frame>& train_frame,
+             const std::shared_ptr<Frame>& query_frame) {
     std::vector<cv::DMatch> matches;
     matcher_->match(query_frame->GetDescr(), train_frame->GetDescr(), matches);
-    return matches;
+    std::vector<std::shared_ptr<MapPoint>> matched_points;
+    matched_points.reserve(matches.size());
+    float min_dist = matches[0].distance;
+    float max_dist = matches[0].distance;
+    for (size_t i = 0; i != matches.size(); ++i) {
+      min_dist = std::min(min_dist, matches[i].distance);
+      max_dist = std::max(max_dist, matches[i].distance);
+    }
+    for (size_t i = 0; i != matches.size(); ++i) {
+      if (matches[i].distance <= std::max(2 * min_dist, 30.0f)) {
+        auto mp = train_frame->GetMapPoint(matches[i].trainIdx);
+        if (mp) {
+          query_frame->SetMapPoint(matches[i].queryIdx, mp);
+        }
+      }
+    }
     /*
     std::vector<cv::KeyPoint> matched1, matched2;
     for(size_t i = 0; i < nn_matches.size(); i++) {
