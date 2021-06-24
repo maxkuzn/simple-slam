@@ -65,6 +65,8 @@ set(THIRD_PARTY_LIBS
     ${OpenCV_LIBS}
     ${Sophus_LIBRARIES}
     ${Pangolin_LIBRARIES}
+#     ${G2O_INCLUDE_DIRS}
+    g2o_core g2o_stuff
 )
 
 
