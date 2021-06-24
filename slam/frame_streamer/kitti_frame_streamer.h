@@ -62,7 +62,7 @@ class KITTIFrameStreamer : public IFrameStreamer {
       return nullptr;
     }
 
-    return Frame::FromStereo(left_img, right_img, timestamp);
+    return Frame::FromStereo(left_img, right_img, timestamp, camera_);
   }
 
  private:

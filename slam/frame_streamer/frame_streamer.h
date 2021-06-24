@@ -43,7 +43,9 @@ class IFrameStreamer {
   };
 
  public:
-  IFrameStreamer() {
+  IFrameStreamer(float cx, float cy, float fx, float fy)
+      : camera_(std::make_shared<const Camera>(cx, cy, fx, fy))
+  {
   }
 
   virtual ~IFrameStreamer() = default;
@@ -57,6 +59,9 @@ class IFrameStreamer {
   Iterator end() {
     return Iterator(*this);
   }
+
+ protected:
+  const std::shared_ptr<const Camera> camera_;
 };
 
 
