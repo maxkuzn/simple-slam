@@ -4,6 +4,8 @@
 #include "slam/core/map_point.h"
 #include "slam/feature/orb_matcher.h"
 #include "slam/util/logger.h"
+#include "slam/algorithm/pose_optimizer.h"
+
 #include <memory>
 #include <opencv2/core/hal/interface.h>
 namespace slam {
@@ -28,8 +30,30 @@ class Tracker {
     } else {
       // Match
       LogInfo() << "Match frames";
-      auto matches = orb_matcher_->Match(prev_frame_, frame);
+      orb_matcher_->Match(prev_frame_, frame);
+      size_t size = frame->GetKeyPointsSize();
+      for (size_t i = 0; i != size; ++i) {
+        auto mp = frame->GetMapPoint(i);
+        if (mp) {
+          LogInfo() << "Found match\n"
+                    << "Index: " << i << '\n'
+                    << "Coord: " << mp->GetCoordinates() << '\n';
+        }
+      }
       frame->SetPose(prev_frame_->GetPose());
+      OptimizePose(frame);
+      // Create MapPoints
+      for (size_t i = 0; i != size; ++i) {
+        auto mp = frame->GetMapPoint(i);
+        if (!mp) {
+          cv::Mat w_c = frame->GetKeyPointWorldCoordinates(i);
+          if (!w_c.empty()) {
+            mp = std::make_shared<MapPoint>(w_c);
+            frame->SetMapPoint(i, mp);
+          }
+        }
+      }
+      LogDebug() << "Pose of new frame is \n" << frame->GetPose() << '\n';
       prev_frame_ = frame;
     }
   }
@@ -40,8 +64,10 @@ class Tracker {
     size_t size = frame->GetKeyPointsSize();
     for (size_t i = 0; i != size; ++i) {
       cv::Mat w_c = frame->GetKeyPointWorldCoordinates(i);
-      auto map_point = std::make_shared<MapPoint>(w_c);
-      frame->SetMapPoint(i, map_point);
+      if (!w_c.empty()) {
+        auto map_point = std::make_shared<MapPoint>(w_c);
+        frame->SetMapPoint(i, map_point);
+      }
     }
     prev_frame_ = frame;
     status_ = EStatus::kOk;
