@@ -17,58 +17,61 @@
 
 namespace slam {
 
-class KITTIFrameStreamer : public IFrameStreamer {
+class TUMFrameStreamer : public IFrameStreamer {
  public:
-  KITTIFrameStreamer(const std::string& path_to_sequence)
+  TUMFrameStreamer(const std::string& path_to_sequence)
     : IFrameStreamer(1, 1, 1, 1)
     , path_to_sequence_(path_to_sequence)
-    , timestamps_file_(path_to_sequence + "/times.txt")
+    , associations_file_(path_to_sequence + "/associations.txt")
     , curr_idx_(0)
   {
-    if (!timestamps_file_.is_open()) {
+    if (!associations_file_.is_open()) {
       LogFatal() << "Cannot open times.txt file";
       throw std::runtime_error("File not exits");
     }
   }
 
   std::shared_ptr<Frame> NextFrame() {
-    if (timestamps_file_.eof()) {
+    if (associations_file_.eof()) {
       LogDebug() << "End of images sequence";
       return nullptr;
     }
     double timestamp;
-    if (!(timestamps_file_ >> timestamp)) {
-      if (timestamps_file_.eof()) {
+    if (!(associations_file_>> timestamp)) {
+      if (associations_file_.eof()) {
         LogDebug() << "End of images sequence";
       } else {
         LogError() << "Cannot load frame " << curr_idx_;
       }
       return nullptr;
     }
+    std::string rgb_file;
+    std::string depth_file;
+    associations_file_ >> rgb_file;
+    associations_file_ >> timestamp;
+    associations_file_ >> depth_file;
     LogInfo() << "Loading frame " << curr_idx_;
-    std::stringstream idx_str;
-    idx_str << std::setfill('0') << std::setw(6) << curr_idx_;
     ++curr_idx_;
-    std::string left_img_path = path_to_sequence_ + "/image_0/" + idx_str.str() + ".png";
-    std::string right_img_path = path_to_sequence_ + "/image_1/" + idx_str.str() + ".png";
+    std::string rgb_img_path = path_to_sequence_ + "/" + rgb_file;
+    std::string depth_path = path_to_sequence_ + "/" + depth_file;
 
-    cv::Mat left_img = cv::imread(left_img_path, CV_LOAD_IMAGE_UNCHANGED);
-    cv::Mat right_img = cv::imread(right_img_path, CV_LOAD_IMAGE_UNCHANGED);
-    if (left_img.empty()) {
-      LogError() << "Unable to load image \"" << left_img_path << "\"";
+    cv::Mat rgb_img = cv::imread(rgb_img_path, CV_LOAD_IMAGE_UNCHANGED);
+    cv::Mat depth = cv::imread(depth_path, CV_LOAD_IMAGE_UNCHANGED);
+    if (rgb_img.empty()) {
+      LogError() << "Unable to load image \"" << rgb_img_path << "\"";
       return nullptr;
     }
-    if (right_img.empty()) {
-      LogError() << "Unable to load image \"" << right_img_path << "\"";
+    if (depth.empty()) {
+      LogError() << "Unable to load image \"" << depth_path << "\"";
       return nullptr;
     }
 
-    return Frame::FromStereo(left_img, right_img, timestamp, camera_);
+    return Frame::FromRGBD(rgb_img, depth, timestamp, camera_);
   }
 
  private:
   std::string path_to_sequence_;
-  std::ifstream timestamps_file_;
+  std::ifstream associations_file_;
   size_t curr_idx_;
 };
 

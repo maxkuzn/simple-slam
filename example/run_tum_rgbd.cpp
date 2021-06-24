@@ -1,11 +1,11 @@
 #include "slam/util/logger.h"
 #include "slam/system.h"
 #include "slam/settings.h"
-#include "slam/frame_streamer/kitti_frame_streamer.h"
+#include "slam/frame_streamer/tum_frame_streamer.h"
 
 int main(int argc, char** argv) {
-  std::string sequence_path = "/home/max/slam/datasets/kitti/dataset/sequences/06";
-  slam::KITTIFrameStreamer frame_streamer(sequence_path);
+  std::string sequence_path = "/home/max/slam/datasets/tum/rgbd_dataset_freiburg1_xyz";
+  slam::TUMFrameStreamer frame_streamer(sequence_path);
   slam::SLAMSettings settings;
   settings.SetLogLevel(slam::ELogLevel::kInfo);
   slam::System slam(settings);

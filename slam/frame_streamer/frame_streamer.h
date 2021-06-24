@@ -44,7 +44,7 @@ class IFrameStreamer {
 
  public:
   IFrameStreamer(float cx, float cy, float fx, float fy)
-      : camera_(std::make_shared<const Camera>(cx, cy, fx, fy))
+      : camera_(std::make_shared<Camera>(cx, cy, fx, fy))
   {
   }
 
@@ -61,7 +61,7 @@ class IFrameStreamer {
   }
 
  protected:
-  const std::shared_ptr<const Camera> camera_;
+  std::shared_ptr<Camera> camera_;
 };
 
 
