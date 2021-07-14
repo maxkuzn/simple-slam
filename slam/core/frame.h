@@ -4,6 +4,7 @@
 #include "slam/core/map_point.h"
 #include <memory>
 #include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
 #include <opencv2/core/types.hpp>
 #include <stdexcept>
 #include <slam/util/logger.h>
@@ -64,6 +65,10 @@ class Frame : public std::enable_shared_from_this<Frame> {
                 new Frame(rgbd_t{},
                           img, depth, timestamp,
                           camera));
+  }
+
+  const cv::Mat& GetImage() const {
+    return img_;
   }
 
   void ExtractFeatures(ORBExtractor& orb_extractor);
