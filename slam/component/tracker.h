@@ -26,7 +26,7 @@ class Tracker {
 
   void Track(const std::shared_ptr<Frame>& frame) {
     if (status_ == EStatus::kNotInitialized) {
-      Init(frame);
+      Initialization(frame);
     } else {
       // Match
       LogInfo() << "Match frames";
@@ -59,7 +59,7 @@ class Tracker {
   }
 
  private:
-  void Init(const std::shared_ptr<Frame>& frame) {
+  void Initialization(const std::shared_ptr<Frame>& frame) {
     frame->SetPose(cv::Mat::eye(4, 4, CV_32F));
     size_t size = frame->GetKeyPointsSize();
     for (size_t i = 0; i != size; ++i) {
