@@ -7,13 +7,13 @@ int main(int argc, char** argv) {
   std::string sequence_path = "/home/max/slam/datasets/tum/rgbd_dataset_freiburg1_xyz";
   slam::TUMFrameStreamer frame_streamer(sequence_path);
   slam::SLAMSettings settings;
-  settings.SetLogLevel(slam::ELogLevel::kInfo);
+  settings.SetLogLevel(slam::ELogLevel::kDebug);
   slam::System slam(settings);
 
   size_t iter = 0;
   for (auto&& frame : frame_streamer) {
     ++iter;
-    if (iter > 50) {
+    if (iter > 500) {
       break;
     }
     slam.Track(frame);
